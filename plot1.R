@@ -1,0 +1,35 @@
+# Script to produce plot 1
+
+## load library
+library(dplyr)
+
+## Extract and format data 
+# Extract file from zip file
+filename <- "exdata_data_household_power_consumption.zip"
+if (!file.exists("UCI HAR Dataset")) { 
+        unzip(filename) 
+}
+
+# Read file into R
+data <- read.table("household_power_consumption.txt", na.strings = "?", skip = 1, sep = ";", stringsAsFactors=F,  
+                   col.names = c("Date", "Time", "Global_active_power", "Global_reactive_power", 
+                                 "Voltage", "Global_intensity","Sub_metering_1", "Sub_metering_2", 
+                                 "Sub_metering_3"))
+
+# Convert date columns to date class
+data$Date <- as.Date(data$Date, format='%d/%m/%Y')
+
+# Subset data for required dates 
+data1 <- filter(data, Date >= as.Date("2007-02-01"), Date <= as.Date("2007-02-02"))
+
+# Open a PNG graphics window to save plot into 
+png("plot1.png", width=480, height=480)
+
+# Produce histogram graph of Global Active Power
+hist(data1$Global_active_power, main="Global Active Power", 
+     xlab="Global Active Power (kilowatts)", ylab="Frequency", col="Red")
+
+# Close grpahics window
+dev.off()
+
+
